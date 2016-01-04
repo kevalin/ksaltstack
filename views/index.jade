@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  .container(style="margin-top:80px")
+    .row
+      div.center(style="width:400px; hight:300px")
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title ksaltstack
+          .panel-body
+            form.form-horizontal
+              .form-group
+                label.col-sm-3.control-label(for="inputUsername") Username
+                .col-sm-9
+                  input#inputUsername.form-control(type="username", placeholder="用户名")
+              .form-group
+                label.col-sm-3.control-label(for="inputPassword") Password
+                .col-sm-9
+                  input#inputPassword.form-control(type="password", placeholder="密码")
+              .form-group
+                .col-sm-12
+                  .well
+              .form-group
+                .col-sm-offset-3.col-sm-9
+                  button#btnLogin.btn.btn-default(type="button") 登录
+      
+  script(src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js")
+  script(src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js")
+  script(src="/javascripts/index/main.js")
