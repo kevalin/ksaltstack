@@ -1,7 +1,7 @@
 # ksaltsatck
-试用于saltstack的通用web UI。开发中......
+试用于saltstack的通用Web UI。开发中......
 
-## 开发环境
+### 开发环境
 
 * Web框架——express（基于jade渲染引擎）
 * 数据库——mongodb
