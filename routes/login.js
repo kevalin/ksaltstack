@@ -34,23 +34,23 @@ router.post('/', function(req, res, next) {
             var db = mongoose.createConnection('mongodb://192.168.10.91:27017/users');
 
             db.on('error', function(e) {
-                console.log('mongodb: %s', e)
+                console.log('mongo error: ', e)
             });
 
             var result = JSON.parse(body).return;
-            
-            result['password'] = req.body.password;
+
+            delete result.user;
             result['start'] = result.start * 1000;
             result['expire'] = result.expire * 1000;
-            
+
             var usersModel = db.model('users', usersSchema);
             var tempResult = new usersModel(result);
             
-            tempResult.save(function(err) {
-                if (err) return console.log(err);
-                console.log('%s login success', tempResult.user);
+            tempResult.update({user: req.body.username}, result, {upsert: true}, function(err, raw) {
+                if (err) return console.log('mongo update error: ', err);
+                console.log('update token success: ', raw);
                 db.close();
-                res.send({statusCode: resHttps.statusCode})
+                res.render('main')
             })
         } else {
             console.log(error);
