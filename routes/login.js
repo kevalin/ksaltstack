@@ -50,7 +50,7 @@ router.post('/', function(req, res, next) {
                 if (err) return console.log('mongo update error: ', err);
                 console.log('update token success: ', raw);
                 db.close();
-                res.render('main')
+                res.render('main', {statusCode: resHttps.statusCode})
             })
         } else {
             console.log(error);
