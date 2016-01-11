@@ -8,6 +8,9 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var login = require('./routes/login');
+var servers = require('./routes/servers');
+var main = require('./routes/main');
+var login_test = require('./routes/login_test');
 
 var app = express();
 
@@ -25,6 +28,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/login', login);
+app.get('/servers', servers.list);
+app.get('/servers/:id', servers.get);
+app.put('/servers/:id', servers.update);
+app.delete('/servers/:id', servers.delete);
+app.post('/servers', servers.add);
+app.get('/main', main.index);
+app.get('/login/index', login_test.index);
+app.post('/login/test', login_test.login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

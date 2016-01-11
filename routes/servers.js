@@ -1,54 +1,67 @@
 /**
  * Created by lizi on 2016/1/7.
  */
-var express = require('express');
-var router = express.Router();
+var mongo = require('mongo');
 var request = require('request');
-var mongoose = require('mongoose');
+var servers = mongo({dbname: 'servers'});
+var users = mongo({dbname: 'users'});
 
-router.get('/', function(req, res) {
-    var db = mongoose.createConnection('mongodb://192.168.10.91:27017/servers');
-    db.on('error', function(e) {
-        console.log('mongo error: ', e)
-    });
-
-    var serverSchema = new mongoose.Schema({any: {}});
-    var servers = mongoose.model('servers', serverSchema);
-
+exports.list = function(req, res) {
     servers.find({}).select().exec(function(err, docs) {
         if (err) {
             console.log(err);
+            res.send({statusCode: 0});
             return
         }
-        db.close();
-        res.render('server', {status: 'ok', result: docs})
+        res.render('server', {statusCode: 1, result: docs})
     })
-});
+};
 
-router.put(':hostname', function(req, res) {
-    var serverInfo = req.body;
-    var db = mongoose.createConnection('mongodb://192.168.10.91:27017/servers');
-
-    db.on('error', function(e) {
-        console.log('mongo error: ', e)
-    });
-
-    var serverSchema = new mongoose.Schema({any: {}});
-    var servers = mongoose.model('servers', serverSchema);
-
-    servers.findOneAndUpdate({hostname: req.body.hostname}, serverInfo, function(err, raw) {
+exports.get = function(req, res) {
+    servers.find({hostname: req.params.id}, function(err, docs) {
         if (err) {
-            res.send({status: 'no'});
+            console.log(err);
+            res.send({statusCode: 0});
             return
         }
-        console.log('update server success: ', raw);
-        res.send({status: 'ok'});
-        db.close()
-    });
-});
+        res.send({statusCode: 1, result: docs})
+    })
+};
 
-router.delete(':hostname', function(req, res) {
+exports.delete = function(req, res) {
+    servers.remove({hostname: req.params.id}, function(err, docs) {
+        if (err) {
+            console.log(err);
+            res.send({statusCode: 0});
+            return
+        }
+        res.send({statusCode: 1, result: docs})
+    })
+};
 
-});
+exports.update = function(req, res) {
+    var newData = req.body;
 
-module.exports = router;
+    request();
+    servers.findOneAndUpdate({hostname: req.params.id}, newData, function(err, raw) {
+        if (err) {
+            console.log(err);
+            res.send({statusCode: 0});
+            return
+        }
+        res.send({statusCode: 1, result: raw})
+    })
+};
+
+exports.add = function(req, res) {
+    var data = req.body;
+
+    servers.save(data, function(err, raw) {
+        if (err) {
+            console.log(err);
+            res.send({statusCode: 0});
+            return
+        }
+        res.send({statusCode: 1, result: raw})
+    })
+};
