@@ -3,8 +3,7 @@
  */
 var mongo = require('mongo');
 var request = require('request');
-var servers = mongo({dbname: 'servers'});
-var users = mongo({dbname: 'users'});
+var servers = mongo.serverModel();
 
 exports.list = function(req, res) {
     servers.find({}).select().exec(function(err, docs) {
