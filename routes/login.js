@@ -1,7 +1,7 @@
 var request = require('request');
 var usersModel = require('mongo').userModel();
 
-exports.index = function(req, res) {
+exports.login = function(req, res) {
     var options = {
         url: 'https://192.168.33.10:8000/login',
         method: 'POST',
