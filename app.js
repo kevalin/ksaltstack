@@ -37,14 +37,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.post('/login', login.login);
+app.get('/main', main.index);
 app.get('/servers', servers.list);
 app.get('/servers/:id', servers.get);
 app.put('/servers/:id', servers.update);
 app.delete('/servers/:id', servers.delete);
 app.post('/servers', servers.add);
-app.get('/main', main.index);
-app.get('/login/index', login_test.index);
-app.post('/login/test', login_test.login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
