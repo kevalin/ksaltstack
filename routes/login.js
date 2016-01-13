@@ -25,20 +25,21 @@ exports.login = function(req, res) {
             if (req.body.password !== user.password) {
                 res.send({scode: 0, info: 'password is wrong'})
             } else {
-                request(options, function(error, resHttps, body) {
-                    if (!error && resHttps.statusCode == 200) {
-                        req.session['user'] = body;
+                res.render('main', {scode: 1})
+                // request(options, function(error, resHttps, body) {
+                //     if (!error && resHttps.statusCode == 200) {
+                //         req.session['user'] = body;
 
-                        usersModel.update({user: user.username}, body, {upsert: true}, function(err, raw) {
-                            if (err) return console.log(err);
-                            //console.log('update token success: ', raw);
-                            res.render('main', {scode: 1})
-                        })
-                    } else {
-                        console.log(error);
-                        res.send({scode: 0, info: error.message})
-                    }
-                })
+                //         usersModel.update({user: user.username}, body, {upsert: true}, function(err, raw) {
+                //             if (err) return console.log(err);
+                //             //console.log('update token success: ', raw);
+                //             res.render('main', {scode: 1})
+                //         })
+                //     } else {
+                //         console.log(error);
+                //         res.send({scode: 0, info: error.message})
+                //     }
+                // })
             }
         }
     })

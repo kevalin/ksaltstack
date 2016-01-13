@@ -12,20 +12,19 @@ block content
               .form-group
                 label.col-sm-3.control-label(for="inputUsername") Username
                 .col-sm-9
-                  input.form-control(name="username", type="username", placeholder="用户名", ng-model="user.name")
+                  input.form-control(name="username", type="username", placeholder="用户名", ng-model="user.username", required)
               .form-group
                 label.col-sm-3.control-label(for="inputPassword") Password
                 .col-sm-9
-                  input.form-control(name="password", type="password", placeholder="密码", ng-model="user.name")
+                  input.form-control(name="password", type="password", placeholder="密码", ng-model="user.password", required)
               .form-group
                 .col-sm-12
-                  .well(ng-show="loginForm.username.$error.required") 请输入用户名
-                  .well(ng-show="loginForm.password.$error.required ") 密码不能为空
+                  .well.disnone
               .form-group
                 .col-sm-offset-3.col-sm-9
-                  button.btn.btn-default(type="button", ng-click="submit") 登录
+                  button.btn.btn-default(type="button", ng-click="submit()") 登录
       
   script(src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js")
   script(src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js")
-  script(src="/javascripts/angularjsangular.min.js")
+  script(src="/javascripts/angularjs/angular.min.js")
   script(src="/javascripts/index/main.js")
