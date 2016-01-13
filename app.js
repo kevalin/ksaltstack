@@ -36,7 +36,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/login', login);
+app.post('/login', login.login);
 app.get('/servers', servers.list);
 app.get('/servers/:id', servers.get);
 app.put('/servers/:id', servers.update);
