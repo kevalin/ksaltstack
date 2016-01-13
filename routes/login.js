@@ -1,19 +1,7 @@
-var express = require('express');
-var router = express.Router();
 var request = require('request');
-var mongoose = require('mongoose');
+var usersModel = require('mongo').userModel();
 
-var usersSchema = new mongoose.Schema({
-    user: {type: String},
-    password: {type: String},
-    token: {type: String},
-    start: {type: Date},
-    expire: {type: Date},
-    eauth: {type: String},
-    perms: {type: Array}
-});
-
-router.post('/', function(req, res, next) {
+exports.index = function(req, res) {
     var options = {
         url: 'https://192.168.33.10:8000/login',
         method: 'POST',
@@ -28,35 +16,30 @@ router.post('/', function(req, res, next) {
             eauth: 'pam'
         }
     };
-    
-    request(options, function(error, resHttps, body) {
-        if (!error && resHttps.statusCode == 200) {
-            var db = mongoose.createConnection('mongodb://192.168.10.91:27017/users');
 
-            db.on('error', function(e) {
-                console.log('mongo error: ', e)
-            });
-
-            var result = JSON.parse(body).return;
-
-            delete result.user;
-            result['start'] = result.start * 1000;
-            result['expire'] = result.expire * 1000;
-
-            var usersModel = db.model('users', usersSchema);
-            var tempResult = new usersModel(result);
-            
-            tempResult.update({user: req.body.username}, result, {upsert: true}, function(err, raw) {
-                if (err) return console.log('mongo update error: ', err);
-                console.log('update token success: ', raw);
-                db.close();
-                res.render('main', {statusCode: resHttps.statusCode})
-            })
+    usersModel.findOne({user: req.body.username}, function(err, user) {
+        if (err) return console.log(err);
+        if (!user) {
+            res.send({scode: 0, info: 'user not exist'})
         } else {
-            console.log(error);
-            res.send({statusCode: resHttps.statusCode, info: error})
+            if (req.body.password !== user.password) {
+                res.send({scode: 0, info: 'password is wrong'})
+            } else {
+                request(options, function(error, resHttps, body) {
+                    if (!error && resHttps.statusCode == 200) {
+                        req.session['user'] = body;
+
+                        usersModel.update({user: user.username}, body, {upsert: true}, function(err, raw) {
+                            if (err) return console.log(err);
+                            //console.log('update token success: ', raw);
+                            res.render('main', {scode: 1})
+                        })
+                    } else {
+                        console.log(error);
+                        res.send({scode: 0, info: error.message})
+                    }
+                })
+            }
         }
     })
-});
-
-module.exports = router;
+};

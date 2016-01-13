@@ -21,7 +21,7 @@
             var loginInfo = {
                 username: $("#inputUsername").val(),
                 password: $("#inputPassword").val()
-            }
+            };
             
             console.log(loginInfo);
             
@@ -35,4 +35,4 @@
             })
         })
     }
-})()
+})();
