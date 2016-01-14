@@ -1,5 +1,5 @@
 var app = angular.module('mainApp', []);
-app.controller('loginCtrl', function($scope, $http) {
+app.controller('loginCtrl', function($scope, $http, $location) {
     $scope.submit = function() {
         $http({
             method: 'POST',
@@ -9,7 +9,7 @@ app.controller('loginCtrl', function($scope, $http) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).success(function(data) {
-            console.log(data);
+            $location.path('/main')
         });
     }
 });

@@ -25,7 +25,9 @@ exports.login = function(req, res) {
             if (req.body.password !== user.password) {
                 res.send({scode: 0, info: 'password is wrong'})
             } else {
-                res.render('main', {scode: 1})
+                delete user.password;
+                req.session['user'] = user;
+                res.redirect('/main');
                 // request(options, function(error, resHttps, body) {
                 //     if (!error && resHttps.statusCode == 200) {
                 //         req.session['user'] = body;

@@ -36,6 +36,11 @@ app.use(session({
     },
     resave: false,
     saveUninitialized: true
+    /*store: new MongoStore({
+        host: '127.0.0.1',
+        port: 27017,
+        db: 'ksession'
+    })*/
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
