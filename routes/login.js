@@ -17,7 +17,9 @@ exports.login = function(req, res) {
         }
     };
 
-    usersModel.findOne({user: req.body.username}, function(err, user) {
+    usersModel.findOne({username: req.body.username}, function(err, user) {
+        console.log(req.body);
+        console.log(user);
         if (err) return console.log(err);
         if (!user) {
             res.send({scode: 0, info: 'user not exist'})
