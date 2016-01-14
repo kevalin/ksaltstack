@@ -22,7 +22,7 @@ block content
                   .well.disnone
               .form-group
                 .col-sm-offset-3.col-sm-9
-                  button.btn.btn-default(type="button", ng-click="submit()") 登录
+                  button.btn.btn-default(type="button", ng-click="submit()", ng-disabled="loginForm.username.$invalid || loginForm.password.$invalid") 登录
       
   script(src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js")
   script(src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js")
