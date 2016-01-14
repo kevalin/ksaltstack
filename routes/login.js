@@ -29,7 +29,7 @@ exports.login = function(req, res) {
             } else {
                 delete user.password;
                 req.session['user'] = user;
-                res.redirect('/main');
+                res.send({scode: 1, info: 'login success'});
                 // request(options, function(error, resHttps, body) {
                 //     if (!error && resHttps.statusCode == 200) {
                 //         req.session['user'] = body;
