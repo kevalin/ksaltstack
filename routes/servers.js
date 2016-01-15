@@ -57,13 +57,13 @@ exports.update = function(req, res) {
                 console.log(hostname);
                 var serverInfos = JSON.parse(body).return[0][hostname];
                 console.log(serverInfos.os);
-                servers.findOneAndUpdate({hostname: hostname}, {$set: {os: serverInfos.os}}, function(err, raw) {
+                servers.findOneAndUpdate({host: hostname}, {$set: serverInfos}, function(err, raw) {
                     if (err) {
                         console.log(err);
                         res.send({scode: 0, info: 'insert serversInfo into mongodb faild'});
                         return
                     }
-                    res.send({scode: 1, info: raw})
+                    res.send({scode: 1, info: raw.toObject()._id})
                 });
             } else {
                 console.log(err, resHttps.statusCode);
