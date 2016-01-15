@@ -8,8 +8,11 @@ app.controller('loginCtrl', function($scope, $http) {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
-        }).success(function() {
-            location.href = '/main'
+        }).success(function(data) {
+            console.log(data);
+            if (data.scode == 1) {
+                location.href = '/main';
+            }
         });
     }
 });

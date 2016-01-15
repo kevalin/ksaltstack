@@ -3,8 +3,10 @@
  */
 var servers = require('mongo').serverModel();
 var request = require('request');
+var saltapi = require('../config/saltapi');
 
 exports.list = function(req, res) {
+    console.log(req.session);
     servers.find({}).select().exec(function(err, docs) {
         if (err) {
             console.log(err);
@@ -38,17 +40,39 @@ exports.delete = function(req, res) {
 };
 
 exports.update = function(req, res) {
-    var newData = req.body;
+    if (req.session.user) {
+        var options = {
+            url: saltapi.host + '/minions/' + req.params.id,
+            rejectUnauthorized: false,
+            headers: {
+                'Content-Type' : 'application/x-www-form-urlencoded',
+                'X-Auth-Token' : req.session.user.token,
+                'Accept'       : 'application/json'
+            }
+        };
 
-    request();
-    servers.findOneAndUpdate({hostname: req.params.id}, newData, function(err, raw) {
-        if (err) {
-            console.log(err);
-            res.send({scode: 0});
-            return
-        }
-        res.send({scode: 1, result: raw})
-    })
+        request(options, function(err, resHttps, body) {
+            if (!err || resHttps.statusCode == 200) {
+                var hostname = req.params.id;
+                console.log(hostname);
+                var serverInfos = JSON.parse(body).return[0][hostname];
+                console.log(serverInfos.os);
+                servers.findOneAndUpdate({hostname: hostname}, {$set: {os: serverInfos.os}}, function(err, raw) {
+                    if (err) {
+                        console.log(err);
+                        res.send({scode: 0, info: 'insert serversInfo into mongodb faild'});
+                        return
+                    }
+                    res.send({scode: 1, info: raw})
+                });
+            } else {
+                console.log(err, resHttps.statusCode);
+                res.send({scode: 0, info: 'request saltapi faild'})
+            }
+        });
+    } else {
+        res.redirect('/')
+    }
 };
 
 exports.add = function(req, res) {

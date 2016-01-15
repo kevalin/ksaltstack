@@ -1,9 +1,10 @@
 var request = require('request');
 var usersModel = require('mongo').userModel();
+var saltapi = require('../config/saltapi');
 
 exports.login = function(req, res) {
     var options = {
-        url: 'https://192.168.33.10:8000/login',
+        url: saltapi.host + '/login',
         method: 'POST',
         rejectUnauthorized: false,
         header: {
@@ -18,8 +19,6 @@ exports.login = function(req, res) {
     };
 
     usersModel.findOne({username: req.body.username}, function(err, user) {
-        console.log(req.body);
-        console.log(user);
         if (err) return console.log(err);
         if (!user) {
             res.send({scode: 0, info: 'user not exist'})
@@ -27,23 +26,29 @@ exports.login = function(req, res) {
             if (req.body.password !== user.password) {
                 res.send({scode: 0, info: 'password is wrong'})
             } else {
-                delete user.password;
-                req.session['user'] = user;
-                res.send({scode: 1, info: 'login success'});
-                // request(options, function(error, resHttps, body) {
-                //     if (!error && resHttps.statusCode == 200) {
-                //         req.session['user'] = body;
+                request(options, function(error, resHttps, body) {
+                    if (!error && resHttps.statusCode == 200) {
+                        console.log(JSON.parse(body).return[0]);
+                        var saltapiReturn = JSON.parse(body).return[0];
+                        var needSave = {
+                            token: saltapiReturn.token,
+                            expire: saltapiReturn.expire * 1000,
+                            perms: saltapiReturn.perms
+                        };
+                        req.session['user'] = saltapiReturn;
 
-                //         usersModel.update({user: user.username}, body, {upsert: true}, function(err, raw) {
-                //             if (err) return console.log(err);
-                //             //console.log('update token success: ', raw);
-                //             res.render('main', {scode: 1})
-                //         })
-                //     } else {
-                //         console.log(error);
-                //         res.send({scode: 0, info: error.message})
-                //     }
-                // })
+                        console.log(req.session);
+
+                        usersModel.findOneAndUpdate({username: saltapiReturn.user}, {$set: needSave}, function(err, raw) {
+                             if (err) return console.log(err);
+                             console.log('update user success: ', raw.toObject().username);
+                             res.send({scode: 1})
+                        })
+                    } else {
+                        console.log(error);
+                        res.send({scode: 0, info: error})
+                    }
+                })
             }
         }
     })

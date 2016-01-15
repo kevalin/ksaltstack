@@ -5,8 +5,9 @@ var mongo = require('mongo');
 var usersModel = mongo.userModel();
 
 exports.index = function(req, res) {
-    if (req.session && req.session.user) {
-        usersModel.findOne({user: req.session.user.user}, function(err, user) {
+    console.log(req.session);
+    if (req.session.user) {
+        usersModel.findOne({username: req.session.user.user}, function(err, user) {
             if (err) return console.log(err);
             if (!user) {
                 req.session.reset();

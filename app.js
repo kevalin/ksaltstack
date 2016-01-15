@@ -22,7 +22,7 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(logger('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -30,18 +30,18 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(session({
     secret: 'kevalin',
-    name: 'ksaltstack',
-    cookie: {
-        maxAge: 80000
-    },
     resave: false,
     saveUninitialized: true
-    /*store: new MongoStore({
-        host: '127.0.0.1',
-        port: 27017,
-        db: 'ksession'
-    })*/
 }));
+/*app.use(function(req, res, next) {
+    if (req.session) {
+        console.log(req.session);
+        next()
+    } else {
+        console.log('no req.session');
+        next()
+    }
+});*/
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
