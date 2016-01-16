@@ -6,7 +6,6 @@ var request = require('request');
 var saltapi = require('../config/saltapi');
 
 exports.list = function(req, res) {
-    console.log(req.session);
     servers.find({}).select().exec(function(err, docs) {
         if (err) {
             console.log(err);
@@ -18,7 +17,7 @@ exports.list = function(req, res) {
 };
 
 exports.get = function(req, res) {
-    servers.find({hostname: req.params.id}, function(err, docs) {
+    servers.find({host: req.params.id}, function(err, docs) {
         if (err) {
             console.log(err);
             res.send({scode: 0});
@@ -29,7 +28,7 @@ exports.get = function(req, res) {
 };
 
 exports.delete = function(req, res) {
-    servers.remove({hostname: req.params.id}, function(err, docs) {
+    servers.remove({host: req.params.id}, function(err, docs) {
         if (err) {
             console.log(err);
             res.send({scode: 0});
@@ -40,37 +39,33 @@ exports.delete = function(req, res) {
 };
 
 exports.update = function(req, res) {
-    if (req.session.user) {
-        var options = {
-            url: saltapi.host + '/minions/' + req.params.id,
-            rejectUnauthorized: false,
-            headers: {
-                'Content-Type' : 'application/x-www-form-urlencoded',
-                'X-Auth-Token' : req.session.user.token,
-                'Accept'       : 'application/json'
-            }
-        };
+    var options = {
+        url                : saltapi.host + '/minions/' + req.params.id,
+        rejectUnauthorized : false,
+        headers            : {
+            'Content-Type' : 'application/x-www-form-urlencoded',
+            'X-Auth-Token' : req.session.user.token,
+            'Accept'       : 'application/json'
+        }
+    };
 
-        request(options, function(err, resHttps, body) {
-            if (!err || resHttps.statusCode == 200) {
-                var hostname = req.params.id;
-                var serverInfos = JSON.parse(body).return[0][hostname];
-                servers.findOneAndUpdate({host: hostname}, {$set: serverInfos}, function(err, raw) {
-                    if (err) {
-                        console.log(err);
-                        res.send({scode: 0, info: 'insert serversInfo into mongodb faild'});
-                        return
-                    }
-                    res.send({scode: 1, info: raw.toObject().host})
-                });
-            } else {
-                console.log(err, resHttps.statusCode);
-                res.send({scode: 0, info: 'request saltapi faild'})
-            }
-        });
-    } else {
-        res.redirect('/')
-    }
+    request(options, function(err, resHttps, body) {
+        if (!err || resHttps.statusCode == 200) {
+            var host = req.params.id;
+            var serverInfos = JSON.parse(body).return[0][host];
+            servers.findOneAndUpdate({host: host}, {$set: serverInfos}, function(err, raw) {
+                if (err) {
+                    console.log(err);
+                    res.send({scode: 0, info: 'insert serversInfo into mongodb faild'});
+                    return
+                }
+                res.send({scode: 1, info: raw.toObject().host})
+            });
+        } else {
+            console.log(err, resHttps.statusCode);
+            res.send({scode: 0, info: 'request saltapi faild'})
+        }
+    });
 };
 
 exports.add = function(req, res) {
