@@ -21,7 +21,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -33,15 +33,15 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
-/*app.use(function(req, res, next) {
-    if (req.session) {
-        console.log(req.session);
+// check session middleware
+app.use(function(req, res, next) {
+    if (req.session.user) {
         next()
     } else {
-        console.log('no req.session');
+        res.redirect('/');
         next()
     }
-});*/
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
