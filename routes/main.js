@@ -11,13 +11,13 @@ exports.index = function(req, res) {
             if (err) return console.log(err);
             if (!user) {
                 req.session.reset();
-                res.redirect('/')
+                res.redirect('/');
             } else {
                 res.locals.user = user;
-                res.render('main')
+                res.render('main');
             }
-        })
+        });
     } else {
-        res.redirect('/')
+        res.redirect('/');
     }
 };
