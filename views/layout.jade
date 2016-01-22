@@ -1,9 +1,17 @@
 doctype html
-html(ng-app="mainApp")
+html(ng-app="mainApp", class="bg-black")
   head
+    meta(charset='UTF-8')
     title= title
+    meta(content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no', name='viewport')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap-3.3.5/bootstrap.css')
     line(rel='stylesheet', href='//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css')
-  body
+    link(rel='stylesheet', href='/stylesheets/adminlte.css')
+    // HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
+    // WARNING: Respond.js doesn't work if you view the page via file://
+    //if lt IE 9
+      script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
+      script(src='https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js')
+  body(class="bg-black")
     block content

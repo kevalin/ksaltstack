@@ -38,8 +38,11 @@ app.use(function(req, res, next) {
     if (req.session.user) {
         next()
     } else {
-        res.redirect('/');
-        next()
+        console.log(req.baseUrl)
+        if (req.baseUrl !== "") {
+            res.redirect('/');
+        }
+        next();
     }
 });
 app.use(express.static(path.join(__dirname, 'public')));
