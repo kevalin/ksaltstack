@@ -10,10 +10,10 @@ exports.list = function(req, res) {
         if (err) {
             console.log(err);
             res.send({scode: 0});
-            return
+            return;
         }
-        res.render('server', {scode: 1, result: docs})
-    })
+        res.render('server', {scode: 1, result: docs});
+    });
 };
 
 exports.get = function(req, res) {
@@ -21,10 +21,10 @@ exports.get = function(req, res) {
         if (err) {
             console.log(err);
             res.send({scode: 0});
-            return
+            return;
         }
-        res.send({scode: 1, result: docs})
-    })
+        res.send({scode: 1, result: docs});
+    });
 };
 
 exports.delete = function(req, res) {
@@ -32,10 +32,10 @@ exports.delete = function(req, res) {
         if (err) {
             console.log(err);
             res.send({scode: 0});
-            return
+            return;
         }
-        res.send({scode: 1, result: docs})
-    })
+        res.send({scode: 1, result: docs});
+    });
 };
 
 exports.update = function(req, res) {
@@ -57,13 +57,13 @@ exports.update = function(req, res) {
                 if (err) {
                     console.log(err);
                     res.send({scode: 0, info: 'insert serversInfo into mongodb faild'});
-                    return
+                    return;
                 }
-                res.send({scode: 1, info: raw.toObject().host})
+                res.send({scode: 1, info: raw.toObject().host});
             });
         } else {
             console.log(err, resHttps.statusCode);
-            res.send({scode: 0, info: 'request saltapi faild'})
+            res.send({scode: 0, info: 'request saltapi faild'});
         }
     });
 };
@@ -75,8 +75,8 @@ exports.add = function(req, res) {
         if (err) {
             console.log(err);
             res.send({scode: 0});
-            return
+            return;
         }
-        res.send({scode: 1, result: raw})
-    })
+        res.send({scode: 1, result: raw});
+    });
 };
